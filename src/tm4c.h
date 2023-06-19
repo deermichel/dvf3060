@@ -9,11 +9,24 @@ public:
     // new hal
     HAL();
 
-    // init spi
-    void initSPI() const;
+    // initialize device
+    void init() const;
 
     // transfer via spi, tx data will be overwritten with rx data
     void transferSPI(uint8_t *data, uint8_t count) const;
+
+private:
+    // init clock
+    void initClock() const;
+
+    // init debug leds
+    void initLEDs() const;
+
+    // init spi
+    void initSPI() const;
+
+    // reverse bits (msb <-> lsb)
+    uint8_t rbit(uint8_t data) const;
 };
 
 #endif // TM4C_H

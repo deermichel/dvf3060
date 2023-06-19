@@ -9,6 +9,9 @@ public:
     // new vfd using controller
     VFD(Controller &&controller = Controller());
 
+    // initialize device
+    void init() const;
+
 private:
     // controller instance
     Controller mController;

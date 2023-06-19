@@ -2,7 +2,16 @@
 
 // new controller using hal
 Controller::Controller(HAL &&hal)
-    : mHal(hal) {}
+    : mHAL(hal) {}
+
+// initialize device
+void Controller::init() const {
+    // init hal
+    mHAL.init();
+
+    // 200ms delay
+    // TODO
+}
 
 // set display mode
 void Controller::setDisplayMode(uint8_t mode) const {}

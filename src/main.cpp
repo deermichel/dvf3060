@@ -26,30 +26,6 @@ uint8_t rbit(uint8_t data) {
 void setup() {
     VFD vfd;
 
-    // clock: 40MHz
-    SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
-
-    // debug led
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN);
-    GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_RED);
-
-    // init ssi
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-    GPIOPinConfigure(GPIO_PA2_SSI0CLK);
-    GPIOPinConfigure(GPIO_PA3_SSI0FSS);
-    GPIOPinConfigure(GPIO_PA4_SSI0RX);
-    GPIOPinConfigure(GPIO_PA5_SSI0TX);
-    GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_3 | GPIO_PIN_2);
-    SSIClockSourceSet(SSI0_BASE, SSI_CLOCK_SYSTEM);
-    SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_3, SSI_MODE_MASTER, 100000, 8);
-    SSIEnable(SSI0_BASE);
-
-    // drain rx fifo
-    uint32_t data;
-    while (SSIDataGetNonBlocking(SSI0_BASE, &data));
-
     // 200ms delay
     SysCtlDelay(SysCtlClockGet() / (3 * 5));
 

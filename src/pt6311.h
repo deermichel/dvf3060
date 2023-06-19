@@ -34,6 +34,9 @@ public:
     // new controller using hal
     Controller(HAL &&hal = HAL());
 
+    // initialize device
+    void init() const;
+
     // set display mode
     void setDisplayMode(uint8_t mode) const;
 
@@ -60,7 +63,7 @@ public:
 
 private:
     // hal instance
-    HAL mHal;
+    HAL mHAL;
 };
 
 #endif // PT6311_H
