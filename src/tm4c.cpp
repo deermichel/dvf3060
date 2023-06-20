@@ -36,7 +36,7 @@ void TM4C::transferSPI(uint8_t *data, uint8_t count) const {
     // receive bytes (lsb -> msb)
     uint32_t temp;
     for (uint8_t i = 0; i < count; i++) {
-        SSIDataGet(SSI0_BASE, &temp);
+        SSIDataGetNonBlocking(SSI0_BASE, &temp); // fifo might be smaller than count
         data[i] = rbit((uint8_t)temp);
     }
 }

@@ -12,40 +12,15 @@
 #define LED_BLUE GPIO_PIN_2
 #define LED_GREEN GPIO_PIN_3
 
+// c compatibility
 extern "C" {
     void setup();
     void loop();
 }
 
-uint8_t rbit(uint8_t data) {
-    uint32_t temp = data;
-    asm("rbit %0, %1" : "=r" (temp) : "r" (temp)); // reverse order of 32 bits
-    return (uint8_t)(temp >> 24); // return reversed 8 bits
-}
-
 void setup() {
     DVF3060 dvf3060;
     dvf3060.init();
-
-    // display data write
-    SSIDataPut(SSI0_BASE, rbit(0x40)); // 0x40
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
-
-    // display data
-    SSIDataPut(SSI0_BASE, rbit(0xC0)); // 0xC0
-    for (int i = 0; i < 48; i++) {
-        SSIDataPut(SSI0_BASE, rbit(0xFF)); // 0xFF
-    }
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
-
-    // display on
-    SSIDataPut(SSI0_BASE, rbit(0x8B)); // 0x8B
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
-
-    // led data write
-    SSIDataPut(SSI0_BASE, rbit(0x41)); // 0x41
-    SSIDataPut(SSI0_BASE, rbit(0x00));
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
 }
 
 void loop() {
