@@ -18,8 +18,28 @@ void TM4C::init() const {
     initSPI();
 }
 
+// delay for given number of milliseconds
+void TM4C::delay(uint32_t ms) const {
+    SysCtlDelay(ms * (SysCtlClockGet() / 3000));
+}
+
 // transfer via spi, tx data will be overwritten with rx data
-void TM4C::transferSPI(uint8_t *data, uint8_t count) const {}
+void TM4C::transferSPI(uint8_t *data, uint8_t count) const {
+    // send bytes (msb -> lsb)
+    for (uint8_t i = 0; i < count; i++) {
+        SSIDataPut(SSI0_BASE, rbit(data[i]));
+    }
+
+    // wait for tx done
+    while (SSIBusy(SSI0_BASE));
+
+    // receive bytes (lsb -> msb)
+    uint32_t temp;
+    for (uint8_t i = 0; i < count; i++) {
+        SSIDataGet(SSI0_BASE, &temp);
+        data[i] = rbit((uint8_t)temp);
+    }
+}
 
 // --- private ---
 
@@ -56,8 +76,8 @@ void TM4C::initSPI() const {
     SSIEnable(SSI0_BASE);
 
     // drain rx fifo
-    uint32_t data;
-    while (SSIDataGetNonBlocking(SSI0_BASE, &data));
+    uint32_t temp;
+    while (SSIDataGetNonBlocking(SSI0_BASE, &temp));
 }
 
 // reverse bits (msb <-> lsb)

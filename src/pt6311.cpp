@@ -6,11 +6,14 @@ void PT6311::init() const {
     mHAL.init();
 
     // 200ms delay
-    // TODO
+    mHAL.delay(200);
 }
 
 // set display mode
-void PT6311::setDisplayMode(uint8_t mode) const {}
+void PT6311::setDisplayMode(uint8_t mode) const {
+    uint8_t data = 0x00 | (mode & 0x0F);
+    mHAL.transferSPI(&data, 1);
+}
 
 // set display control
 void PT6311::setDisplayControl(bool enabled, uint8_t brightness) const {}

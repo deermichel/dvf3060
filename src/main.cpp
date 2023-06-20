@@ -27,13 +27,6 @@ void setup() {
     DVF3060 dvf3060;
     dvf3060.init();
 
-    // 200ms delay
-    SysCtlDelay(SysCtlClockGet() / (3 * 5));
-
-    // display mode set
-    SSIDataPut(SSI0_BASE, rbit(0x0B)); // 0x0B
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
-
     // display data write
     SSIDataPut(SSI0_BASE, rbit(0x40)); // 0x40
     while (SSIBusy(SSI0_BASE)); // wait for tx done
@@ -56,9 +49,11 @@ void setup() {
 }
 
 void loop() {
+    HAL hal;
+
     GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_BLUE);
-    SysCtlDelay(SysCtlClockGet() / 3);
+    hal.delay(1000);
 
     GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_GREEN);
-    SysCtlDelay(SysCtlClockGet() / 3);
+    hal.delay(1000);
 }

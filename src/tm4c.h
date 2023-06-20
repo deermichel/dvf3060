@@ -9,6 +9,9 @@ public:
     // initialize device
     void init() const;
 
+    // delay for given number of milliseconds
+    void delay(uint32_t ms) const;
+
     // transfer via spi, tx data will be overwritten with rx data
     void transferSPI(uint8_t *data, uint8_t count) const;
 
