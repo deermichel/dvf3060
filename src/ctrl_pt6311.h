@@ -1,8 +1,8 @@
 #ifndef PT6311_H
 #define PT6311_H
 
-#include <stdint.h>
-#include "tm4c.h"
+#include "ctrl.h"
+#include "hal.h"
 
 // display modes
 #define PT6311_MODE_G8_S20 0b0000
@@ -29,13 +29,14 @@
 #define PT6311_SW4 0x08
 
 // pt6311 display controller
-class Controller {
+template <typename HAL_Impl>
+class Controller_PT6311 : public Controller<Controller_PT6311<HAL_Impl>> {
 public:
     // new controller using hal
-    Controller(HAL &&hal = HAL());
+    Controller_PT6311(HAL_Impl &&hal);
 
     // initialize device
-    void init() const;
+    void init_() const;
 
     // set display mode
     void setDisplayMode(uint8_t mode) const;
@@ -47,7 +48,7 @@ public:
     void setTestMode(bool enabled) const;
 
     // write data to display memory (block write)
-    void writeDisplayData(const uint8_t *data, uint8_t count, uint8_t offset) const;
+    void writeDisplayData_(const uint8_t *data, uint8_t count, uint8_t offset) const;
 
     // write data to display memory (specific address)
     void writeDisplayData(uint8_t data, uint8_t address) const;
@@ -63,7 +64,7 @@ public:
 
 private:
     // hal instance
-    HAL mHAL;
+    HAL<HAL_Impl> mHAL;
 };
 
 #endif // PT6311_H

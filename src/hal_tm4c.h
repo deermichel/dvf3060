@@ -1,19 +1,19 @@
-#ifndef TM4C_H
-#define TM4C_H
+#ifndef HAL_TM4C_H
+#define HAL_TM4C_H
 
-#include <stdint.h>
+#include "hal.h"
 
 // tm4c hardware abstraction layer
-class HAL {
+class HAL_TM4C : public HAL<HAL_TM4C> {
 public:
     // new hal
-    HAL();
+    HAL_TM4C();
 
     // initialize device
-    void init() const;
+    void init_() const;
 
     // transfer via spi, tx data will be overwritten with rx data
-    void transferSPI(uint8_t *data, uint8_t count) const;
+    void transferSPI_(uint8_t *data, uint8_t count) const;
 
 private:
     // init clock
@@ -29,4 +29,4 @@ private:
     uint8_t rbit(uint8_t data) const;
 };
 
-#endif // TM4C_H
+#endif // HAL_TM4C_H

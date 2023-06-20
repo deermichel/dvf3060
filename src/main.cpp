@@ -6,7 +6,10 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
-#include "dvf3060.h"
+
+#include "hal_tm4c.h"
+#include "disp_dvf3060.h"
+#include "ctrl_pt6311.h"
 
 #define LED_RED GPIO_PIN_1
 #define LED_BLUE GPIO_PIN_2
@@ -24,7 +27,10 @@ uint8_t rbit(uint8_t data) {
 }
 
 void setup() {
-    VFD vfd;
+    HAL_TM4C hal;
+    Controller_PT6311<HAL_TM4C> c(std::move(hal));
+    // Display_DVF3060<Controller_PT6311<HAL_TM4C>> d(std::move(c));
+    auto d = Display_DVF3060<auto>(std::move(c));
 
     // 200ms delay
     SysCtlDelay(SysCtlClockGet() / (3 * 5));
