@@ -31,6 +31,9 @@ public:
     // clear icon
     void clearIcon(DVF3060_ICON icon);
 
+    // set character
+    void setChar(char c, uint8_t position);
+
     // is key pressed
     bool isKeyPressed(uint8_t key) const;
 

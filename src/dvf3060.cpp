@@ -14,14 +14,16 @@ void DVF3060::init() {
     HAL hal;
     hal.printUART("DVF3060 initialized\n");
 
-    uint8_t bit = 0;
+    uint8_t bit = 24;
     bool pressed = false;
     char output[64] = {};
 
-    setIcon(DVF3060_ICON::RESUME);
-    setIcon(DVF3060_ICON::INTRO);
-
-    clearIcon(DVF3060_ICON::RESUME);
+    // E H L O
+    setChar(1, 0);
+    setChar(0, 1);
+    setChar(2, 2);
+    setChar(2, 3);
+    setChar(3, 4);
     return;
 
     while (1) {
@@ -35,7 +37,7 @@ void DVF3060::init() {
             pressed = false;
         }
 
-        // mController.writeDisplayData(buffer, 48, 0);
+        clearDisplay();
         mController.writeDisplayData(1 << (bit % 8), bit / 8);
 
         sprintf(output, "address: %02X, bit: %d\n", bit / 8, bit % 8);
@@ -71,6 +73,17 @@ void DVF3060::clearIcon(DVF3060_ICON icon) {
 
     mBuffer[address] &= ~data;
     mController.writeDisplayData(mBuffer[address], address);
+}
+
+// set character
+void DVF3060::setChar(char c, uint8_t position) {
+    uint8_t offset = 3 * (10 - position);
+    uint8_t data0 = DVF3060_CHAR_FONT[c][0];
+    uint8_t data1 = DVF3060_CHAR_FONT[c][1];
+
+    mBuffer[offset + 0] |= data0;
+    mBuffer[offset + 1] |= data1;
+    mController.writeDisplayData(&mBuffer[offset], 2, offset);
 }
 
 // is key pressed
