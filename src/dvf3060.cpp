@@ -1,4 +1,5 @@
 #include "dvf3060.h"
+#include <stdio.h>
 
 // initialize device
 void DVF3060::init() const {
@@ -12,20 +13,23 @@ void DVF3060::init() const {
     mController.setDisplayControl(true, 7);
 
     // clear
-    uint8_t buffer[48] = {0};
+    uint8_t buffer[48] = {};
     mController.writeDisplayData(buffer, 48, 0);
 
-    uint8_t keydata[4];
+    HAL hal;
+    
+    hal.printUART("DVF3060 initialized\n");
     while (1) {
-        // read key data
-        mController.readKeyData(keydata, sizeof(keydata));
+        isKeyPressed(0);
 
-        if (keydata[0] || keydata[1] || keydata[2] || keydata[3]) {
-            mController.writeDisplayData(0x00, 3);
-        } else {
-            mController.writeDisplayData(0xFF, 3);
-        }
-
-        // HAL().delay(100);
+        hal.delay(100);
     }
+}
+
+// is key pressed
+bool DVF3060::isKeyPressed(uint8_t key) const {
+    uint8_t keyData[2] = {};
+    mController.readKeyData(keyData, 2);
+    uint8_t aggregated = keyData[0] | (keyData[1] >> 7); // merge stop key into first byte
+    return (aggregated & key) != 0;
 }

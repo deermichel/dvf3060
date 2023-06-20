@@ -12,6 +12,9 @@ public:
     // delay for given number of milliseconds
     void delay(uint32_t ms) const;
 
+    // print string to uart
+    void printUART(const char *str) const;
+
     // transfer via spi, tx data will be overwritten with rx data
     void transferSPI(uint8_t *data, uint8_t count) const;
 
@@ -21,6 +24,9 @@ private:
 
     // init debug leds
     void initLEDs() const;
+
+    // init uart
+    void initUART() const;
 
     // init spi
     void initSPI() const;

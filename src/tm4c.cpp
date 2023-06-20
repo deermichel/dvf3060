@@ -3,6 +3,7 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
 #include "inc/hw_memmap.h"
 
 // debug leds
@@ -15,12 +16,20 @@
 void TM4C::init() const {
     initClock();
     initLEDs();
+    initUART();
     initSPI();
 }
 
 // delay for given number of milliseconds
 void TM4C::delay(uint32_t ms) const {
     SysCtlDelay(ms * (SysCtlClockGet() / 3000));
+}
+
+// print string to uart
+void TM4C::printUART(const char *str) const {
+    while (*str) {
+        UARTCharPut(UART0_BASE, *str++);
+    }
 }
 
 // transfer via spi, tx data will be overwritten with rx data
@@ -55,6 +64,23 @@ void TM4C::initLEDs() const {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, DEBUG_LEDS);
     GPIOPinWrite(GPIO_PORTF_BASE, DEBUG_LEDS, LED_RED);
+}
+
+// init uart
+void TM4C::initUART() const {
+    // uart0 on port a
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+
+    // pa0 = rx, pa1 = tx
+    GPIOPinConfigure(GPIO_PA0_U0RX);
+    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+
+    // 115200 baud, 8 bit, 1 stop bit, no parity
+    UARTClockSourceSet(UART0_BASE, UART_CLOCK_SYSTEM);
+    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200, UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE);
+    UARTEnable(UART0_BASE);
 }
 
 // init spi
