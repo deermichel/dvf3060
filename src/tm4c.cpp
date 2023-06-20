@@ -1,9 +1,9 @@
+#include "tm4c.h"
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
 #include "inc/hw_memmap.h"
-#include "tm4c.h"
 
 // debug leds
 #define LED_RED GPIO_PIN_1
@@ -11,29 +11,26 @@
 #define LED_GREEN GPIO_PIN_3
 #define DEBUG_LEDS (LED_RED | LED_BLUE | LED_GREEN)
 
-// new hal
-HAL::HAL() {}
-
 // initialize device
-void HAL::init() const {
+void TM4C::init() const {
     initClock();
     initLEDs();
     initSPI();
 }
 
 // transfer via spi, tx data will be overwritten with rx data
-void HAL::transferSPI(uint8_t *data, uint8_t count) const {}
+void TM4C::transferSPI(uint8_t *data, uint8_t count) const {}
 
 // --- private ---
 
 // init clock
-void HAL::initClock() const {
+void TM4C::initClock() const {
     // 200mhz / 5 = 40mhz
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 }
 
 // init debug leds
-void HAL::initLEDs() const {
+void TM4C::initLEDs() const {
     // onboard led on port f
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, DEBUG_LEDS);
@@ -41,7 +38,7 @@ void HAL::initLEDs() const {
 }
 
 // init spi
-void HAL::initSPI() const {
+void TM4C::initSPI() const {
     // ssi0 on port a
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
@@ -64,7 +61,7 @@ void HAL::initSPI() const {
 }
 
 // reverse bits (msb <-> lsb)
-uint8_t HAL::rbit(uint8_t data) const {
+uint8_t TM4C::rbit(uint8_t data) const {
     uint32_t temp = data;
     asm("rbit %0, %1" : "=r" (temp) : "r" (temp)); // reverse order of 32 bits
     return (uint8_t)(temp >> 24); // return reversed 8 bits

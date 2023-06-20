@@ -4,11 +4,8 @@
 #include <stdint.h>
 
 // tm4c hardware abstraction layer
-class HAL {
+class TM4C {
 public:
-    // new hal
-    HAL();
-
     // initialize device
     void init() const;
 

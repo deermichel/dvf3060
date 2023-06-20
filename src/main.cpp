@@ -24,7 +24,8 @@ uint8_t rbit(uint8_t data) {
 }
 
 void setup() {
-    VFD vfd;
+    DVF3060 dvf3060;
+    dvf3060.init();
 
     // 200ms delay
     SysCtlDelay(SysCtlClockGet() / (3 * 5));
@@ -58,15 +59,6 @@ void loop() {
     GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_BLUE);
     SysCtlDelay(SysCtlClockGet() / 3);
 
-    SSIDataPut(SSI0_BASE, rbit(0x41)); // 0x41
-    SSIDataPut(SSI0_BASE, rbit(0x00));
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
-
     GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_GREEN);
     SysCtlDelay(SysCtlClockGet() / 3);
-
-    SSIDataPut(SSI0_BASE, rbit(0x41)); // 0x41
-    SSIDataPut(SSI0_BASE, rbit(0xFF));
-    while (SSIBusy(SSI0_BASE)); // wait for tx done
-
 }

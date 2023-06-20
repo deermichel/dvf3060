@@ -3,18 +3,15 @@
 
 #include "pt6311.h"
 
-// dvf3060 vacuum fluorescent display
-class VFD {
+// dvf3060 front panel
+class DVF3060 {
 public:
-    // new vfd using controller
-    VFD(Controller &&controller = Controller());
-
     // initialize device
     void init() const;
 
 private:
     // controller instance
-    Controller mController;
+    PT6311 mController;
 };
 
 #endif // DVF3060_H

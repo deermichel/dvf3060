@@ -2,7 +2,7 @@
 #define PT6311_H
 
 #include <stdint.h>
-#include "tm4c.h"
+#include "hal.h"
 
 // display modes
 #define PT6311_MODE_G8_S20 0b0000
@@ -29,11 +29,8 @@
 #define PT6311_SW4 0x08
 
 // pt6311 display controller
-class Controller {
+class PT6311 {
 public:
-    // new controller using hal
-    Controller(HAL &&hal = HAL());
-
     // initialize device
     void init() const;
 
