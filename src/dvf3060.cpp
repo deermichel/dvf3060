@@ -18,19 +18,11 @@ void DVF3060::init() {
     bool pressed = false;
     char output[64] = {};
 
-    setIcon(DVF3060_ICON::COLON_HOUR);
-    setIcon(DVF3060_ICON::TITLE);
-    setIcon(DVF3060_ICON::DOT_TITLE);
-    clearIcon(DVF3060_ICON::TITLE);
+    // char test
+    for (int i = 0; i < 10; i++) {
+        setChar(i+10, i);
+    }
     return;
-
-    // E H L O
-    // setChar(1, 0);
-    // setChar(0, 1);
-    // setChar(2, 2);
-    // setChar(2, 3);
-    // setChar(3, 4);
-    // return;
 
     while (1) {
         if (isKeyPressed(DVF3060_KEY_FF) && !pressed) {
