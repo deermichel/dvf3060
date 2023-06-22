@@ -3,27 +3,45 @@
 
 #include <stdint.h>
 
-// icons (index in ICON_FONT)
-enum class DVF3060_ICON : uint8_t {
-    RESUME,
-    REW2,
-    REW1,
-    FF1,
-    FF2,
-    INTRO,
+// icons (address = i/8, bit = i%8)
+enum class DVF3060_ICON : uint16_t {
+    RESUME = 0,
+    REW2 = 1,
+    REW1 = 2,
+    FF1 = 3,
+    FF2 = 4,
+    INTRO = 5,
+    PROG = 6,
+    PBC = 7,
+    AUDIO = 8,
+    DVD = 9,
+    VCD = 10,
+    VIDEO = 11,
+    CD = 12,
+    MP3 = 13,
+    SEC = 24,
+    MIN = 72,
+    COLON_MIN = 87,
+    HOUR = 120,
+    COLON_HOUR = 135,
+    TRACK = 144,
+    DOT_TRACK = 159,
+    CHAP = 168,
+    TITLE = 216,
+    DOT_TITLE = 231,
+    GROUP = 240,
+    PLAY = 264,
+    PAUSE = 265,
+    LOCK = 266,
+    RANDOM = 267,
+    REPEAT = 268,
+    ONE = 269,
+    ALL = 270,
+    A_TO = 271,
+    B = 272,
 };
 
-// icon font (address, bits)
-const uint8_t DVF3060_ICON_FONT[][2] = {
-    { 0x00, 0x01 }, // RESUME
-    { 0x00, 0x02 }, // REW2
-    { 0x00, 0x04 }, // REW1
-    { 0x00, 0x08 }, // FF1
-    { 0x00, 0x10 }, // FF2
-    { 0x00, 0x20 }, // INTRO
-};
-
-// character font (bits)
+// character font (bitmap)
 const uint8_t DVF3060_CHAR_FONT[][2] = {
                         //   7654 3210 FEDC BA98
                         //   ---- ---- ---- ----

@@ -14,17 +14,23 @@ void DVF3060::init() {
     HAL hal;
     hal.printUART("DVF3060 initialized\n");
 
-    uint8_t bit = 24;
+    uint16_t bit = 0;
     bool pressed = false;
     char output[64] = {};
 
-    // E H L O
-    setChar(1, 0);
-    setChar(0, 1);
-    setChar(2, 2);
-    setChar(2, 3);
-    setChar(3, 4);
+    setIcon(DVF3060_ICON::COLON_HOUR);
+    setIcon(DVF3060_ICON::TITLE);
+    setIcon(DVF3060_ICON::DOT_TITLE);
+    clearIcon(DVF3060_ICON::TITLE);
     return;
+
+    // E H L O
+    // setChar(1, 0);
+    // setChar(0, 1);
+    // setChar(2, 2);
+    // setChar(2, 3);
+    // setChar(3, 4);
+    // return;
 
     while (1) {
         if (isKeyPressed(DVF3060_KEY_FF) && !pressed) {
@@ -33,6 +39,12 @@ void DVF3060::init() {
         } else if (isKeyPressed(DVF3060_KEY_REW) && !pressed) {
             bit--;
             pressed = true;
+        } else if (isKeyPressed(DVF3060_KEY_NEXT) && !pressed) {
+            bit+=8;
+            pressed = true;
+        } else if (isKeyPressed(DVF3060_KEY_PREV) && !pressed) {
+            bit-=8;
+            pressed = true;
         } else {
             pressed = false;
         }
@@ -40,7 +52,7 @@ void DVF3060::init() {
         clearDisplay();
         mController.writeDisplayData(1 << (bit % 8), bit / 8);
 
-        sprintf(output, "address: %02X, bit: %d\n", bit / 8, bit % 8);
+        sprintf(output, "address: %02X, bit: %d\n", bit / 8, bit);
         hal.printUART(output);
 
         hal.delay(100);
@@ -57,21 +69,21 @@ void DVF3060::clearDisplay() {
 
 // set icon
 void DVF3060::setIcon(DVF3060_ICON icon) {
-    uint8_t i = static_cast<uint8_t>(icon);
-    uint8_t address = DVF3060_ICON_FONT[i][0];
-    uint8_t data = DVF3060_ICON_FONT[i][1];
+    uint16_t offset = static_cast<uint16_t>(icon);
+    uint8_t address = offset / 8;
+    uint8_t bitmask = 1 << (offset % 8);
 
-    mBuffer[address] |= data;
+    mBuffer[address] |= bitmask;
     mController.writeDisplayData(mBuffer[address], address);
 }
 
 // clear icon
 void DVF3060::clearIcon(DVF3060_ICON icon) {
-    uint8_t i = static_cast<uint8_t>(icon);
-    uint8_t address = DVF3060_ICON_FONT[i][0];
-    uint8_t data = DVF3060_ICON_FONT[i][1];
+    uint16_t offset = static_cast<uint16_t>(icon);
+    uint8_t address = offset / 8;
+    uint8_t bitmask = 1 << (offset % 8);
 
-    mBuffer[address] &= ~data;
+    mBuffer[address] &= ~bitmask;
     mController.writeDisplayData(mBuffer[address], address);
 }
 
