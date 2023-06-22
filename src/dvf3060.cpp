@@ -20,7 +20,7 @@ void DVF3060::init() {
 
     // char test
     for (int i = 0; i < 10; i++) {
-        setChar(i+10, i);
+        setChar(i+26, i);
     }
     return;
 
