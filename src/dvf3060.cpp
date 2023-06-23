@@ -14,11 +14,12 @@ void DVF3060::init() {
     HAL hal;
     hal.printUART("DVF3060 initialized\n");
 
-    const char *str = "012356789ABCDEF";
-    for (int i = 0; i < 10 && str[i]; i++) {
-        setChar(str[i], i);
+    while (1) {
+        uint8_t sw = mController.readSwitchData();
+        for (int i = 0; i < 8; i++) {
+            setChar((sw & (1 << i)) ? '1' : '0', i);
+        }
     }
-    return;
 
     uint16_t bit = 116;
     bool pressed = false;
@@ -40,6 +41,8 @@ void DVF3060::init() {
         } else {
             pressed = false;
         }
+
+        mController.writeLedData(bit % 2 == 0 ? PT6311_LED3 : 0);
 
         clearDisplay();
         for (int i = 0; i < 10; i++) {

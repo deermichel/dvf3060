@@ -56,7 +56,7 @@ public:
     void readKeyData(uint8_t *data, uint8_t count) const;
 
     // read switch data
-    void readSwitchData(uint8_t *data) const;
+    uint8_t readSwitchData() const;
 
 private:
     // hal instance

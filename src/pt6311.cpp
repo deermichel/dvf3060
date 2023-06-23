@@ -64,7 +64,11 @@ void PT6311::writeDisplayData(uint8_t data, uint8_t address) const {
 }
 
 // write data to led port
-void PT6311::writeLedData(uint8_t data) const {}
+void PT6311::writeLedData(uint8_t data) const {
+    uint8_t command = 0x41; // data write mode (led port)
+    uint8_t packet[2] = { command, ~data }; // invert data (active low)
+    mHAL.transferSPI(packet, 2);
+}
 
 // read key data
 void PT6311::readKeyData(uint8_t *data, uint8_t count) const {
@@ -82,4 +86,9 @@ void PT6311::readKeyData(uint8_t *data, uint8_t count) const {
 }
 
 // read switch data
-void PT6311::readSwitchData(uint8_t *data) const {}
+uint8_t PT6311::readSwitchData() const {
+    uint8_t command = 0x43; // data read mode (switch data)
+    uint8_t packet[2] = { command, 0x00 };
+    mHAL.transferSPI(packet, 2);
+    return packet[1]; // switch data
+}
