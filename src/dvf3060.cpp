@@ -1,5 +1,4 @@
 #include "dvf3060.h"
-#include <stdio.h> // TODO: remove
 
 // initialize device
 void DVF3060::init() {
@@ -10,50 +9,6 @@ void DVF3060::init() {
     mController.setDisplayMode(PT6311_MODE_G12_S16);
     clearDisplay();
     mController.setDisplayControl(true, 7);
-
-    HAL hal;
-    hal.printUART("DVF3060 initialized\n");
-
-    while (1) {
-        uint8_t sw = mController.readSwitchData();
-        for (int i = 0; i < 8; i++) {
-            setChar((sw & (1 << i)) ? '1' : '0', i);
-        }
-    }
-
-    uint16_t bit = 116;
-    bool pressed = false;
-    char output[64] = {};
-
-    while (1) {
-        if (isKeyPressed(DVF3060_KEY_FF) && !pressed) {
-            bit++;
-            pressed = true;
-        } else if (isKeyPressed(DVF3060_KEY_REW) && !pressed) {
-            bit--;
-            pressed = true;
-        } else if (isKeyPressed(DVF3060_KEY_NEXT) && !pressed) {
-            bit+=10;
-            pressed = true;
-        } else if (isKeyPressed(DVF3060_KEY_PREV) && !pressed) {
-            bit-=10;
-            pressed = true;
-        } else {
-            pressed = false;
-        }
-
-        mController.writeLedData(bit % 2 == 0 ? PT6311_LED3 : 0);
-
-        clearDisplay();
-        for (int i = 0; i < 10; i++) {
-            setChar(i+bit, i);
-        }
-
-        sprintf(output, "address: %02X, bit: %d\n", bit / 8, bit);
-        hal.printUART(output);
-
-        hal.delay(100);
-    }
 }
 
 // clear display

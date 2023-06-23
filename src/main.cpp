@@ -18,17 +18,27 @@ extern "C" {
     void loop();
 }
 
+HAL hal;
+DVF3060 dvf3060;
+
 void setup() {
-    DVF3060 dvf3060;
     dvf3060.init();
 }
 
+const char *str = "deermichelHELLO WORLD, i am a teapot 418";
+int i = 0;
+
+void print_string(const char *str) {
+    dvf3060.clearDisplay();
+    for (uint8_t i = 0; i < DVF3060_MAX_CHARS && str[i]; i++) {
+        dvf3060.setChar(str[i], i);
+    }
+}
+
 void loop() {
-    HAL hal;
-
-    GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_BLUE);
-    hal.delay(1000);
-
-    GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, LED_GREEN);
-    hal.delay(1000);
+    print_string(&str[i]);
+    // i++;
+    if (!str[i]) i = 0;
+    GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, i % 2 == 0 ? LED_BLUE : LED_GREEN);
+    hal.delay(200);
 }
