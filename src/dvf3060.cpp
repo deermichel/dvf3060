@@ -1,5 +1,5 @@
 #include "dvf3060.h"
-#include <stdio.h>
+#include <stdio.h> // TODO: remove
 
 // initialize device
 void DVF3060::init() {
@@ -14,11 +14,11 @@ void DVF3060::init() {
     HAL hal;
     hal.printUART("DVF3060 initialized\n");
 
-    // const char *str = "paganini";
-    // for (int i = 0; i < 10 && str[i]; i++) {
-    //     setChar(str[i], i);
-    // }
-    // return;
+    const char *str = "012356789ABCDEF";
+    for (int i = 0; i < 10 && str[i]; i++) {
+        setChar(str[i], i);
+    }
+    return;
 
     uint16_t bit = 116;
     bool pressed = false;
@@ -55,10 +55,10 @@ void DVF3060::init() {
 
 // clear display
 void DVF3060::clearDisplay() {
-    for (uint8_t i = 0; i < BUF_SIZE; i++) {
+    for (uint8_t i = 0; i < DVF3060_BUF_SIZE; i++) {
         mBuffer[i] = 0;
     }
-    mController.writeDisplayData(mBuffer, BUF_SIZE, 0);
+    mController.writeDisplayData(mBuffer, DVF3060_BUF_SIZE, 0);
 }
 
 // set icon
@@ -83,7 +83,9 @@ void DVF3060::clearIcon(DVF3060_ICON icon) {
 
 // set character
 void DVF3060::setChar(char c, uint8_t position) {
-    uint8_t offset = 3 * (10 - position);
+    if (position >= DVF3060_MAX_CHARS) return; // invalid position
+
+    uint8_t offset = 3 * (DVF3060_MAX_CHARS - position);
     uint8_t data0 = (c >= 32 && c <= 127) ? DVF3060_CHAR_FONT[c - 32][0] : 0;
     uint8_t data1 = (c >= 32 && c <= 127) ? DVF3060_CHAR_FONT[c - 32][1] : 0;
 

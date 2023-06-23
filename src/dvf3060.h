@@ -5,7 +5,10 @@
 #include "dvf3060_font.h"
 
 // display buffer size in bytes, addresses 0x00-0x22
-#define BUF_SIZE 35
+#define DVF3060_BUF_SIZE 35
+
+// display max characters
+#define DVF3060_MAX_CHARS 10
 
 // keys
 #define DVF3060_KEY_STOP 0x01
@@ -45,7 +48,7 @@ private:
     PT6311 mController;
 
     // display buffer
-    uint8_t mBuffer[BUF_SIZE] = {};
+    uint8_t mBuffer[DVF3060_BUF_SIZE] = {};
 };
 
 #endif // DVF3060_H
