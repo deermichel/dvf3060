@@ -34,6 +34,9 @@ public:
     // set character
     void setChar(char c, uint8_t position);
 
+    // clear character
+    void clearChar(uint8_t position);
+
     // is key pressed
     bool isKeyPressed(uint8_t key) const;
 
