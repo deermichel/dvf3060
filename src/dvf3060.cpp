@@ -61,10 +61,9 @@ void DVF3060::clearChar(uint8_t position) {
     setChar(' ', position);
 }
 
-// is key pressed
-bool DVF3060::isKeyPressed(uint8_t key) const {
+// return key state
+uint8_t DVF3060::getKeyState() const {
     uint8_t keyData[2] = {};
     mController.readKeyData(keyData, 2);
-    uint8_t aggregated = keyData[0] | (keyData[1] >> 7); // merge stop key into first byte
-    return (aggregated & key) != 0;
+    return keyData[0] | (keyData[1] >> 7); // merge stop key into first byte
 }

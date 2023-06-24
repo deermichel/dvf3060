@@ -1,44 +1,79 @@
-#include <memory>
-#include <stdint.h>
 #include <stdbool.h>
-#include "inc/hw_memmap.h"
-#include "driverlib/gpio.h"
-#include "driverlib/pin_map.h"
-#include "driverlib/ssi.h"
-#include "driverlib/sysctl.h"
+#include <stdint.h>
 #include "dvf3060.h"
 
-#define LED_RED GPIO_PIN_1
-#define LED_BLUE GPIO_PIN_2
-#define LED_GREEN GPIO_PIN_3
-
-// c compatibility
-extern "C" {
-    void setup();
-    void loop();
-}
-
-HAL hal;
+// device instance, timer vars
 DVF3060 dvf3060;
+int8_t hours = 0;
+int8_t minutes = 0;
+int8_t seconds = 0;
+bool running = true;
 
-void setup() {
-    dvf3060.init();
-}
-
-const char *str = "deermichelHELLO WORLD, i am a teapot 418";
-int i = 0;
-
-void print_string(const char *str) {
-    dvf3060.clearDisplay();
-    for (uint8_t i = 0; i < DVF3060_MAX_CHARS && str[i]; i++) {
-        dvf3060.setChar(str[i], i);
+// process front panel keys
+void processKeys() {
+    uint8_t keyState = dvf3060.getKeyState();
+    if (keyState & DVF3060_KEY_PLAY) {
+        running = true; // resume
+    } else if (keyState & DVF3060_KEY_STOP) {
+        running = false; // pause
+    } else if (keyState & DVF3060_KEY_EJECT) {
+        hours = minutes = seconds = 0; // reset
+    } else if (keyState & DVF3060_KEY_NEXT) {
+        hours++; // increment hours
+    } else if (keyState & DVF3060_KEY_PREV) {
+        hours--; // decrement hours
+    } else if (keyState & DVF3060_KEY_FF) {
+        minutes++; // increment minutes
+    } else if (keyState & DVF3060_KEY_REW) {
+        minutes--; // decrement minutes
     }
 }
 
-void loop() {
-    print_string(&str[i]);
-    // i++;
-    if (!str[i]) i = 0;
-    GPIOPinWrite(GPIO_PORTF_BASE, LED_RED | LED_BLUE | LED_GREEN, i % 2 == 0 ? LED_BLUE : LED_GREEN);
-    hal.delay(200);
+// update timer vars
+void updateTimer() {
+    if (running) seconds++;
+    while (seconds < 0) { seconds += 60; minutes--; }
+    while (seconds >= 60) { seconds -= 60; minutes++; }
+    while (minutes < 0) { minutes += 60; hours--; }
+    while (minutes >= 60) { minutes -= 60; hours++; }
+    while (hours < 0) hours += 24;
+    while (hours >= 24) hours -= 24;
+}
+
+// update timer display
+void updateDisplay() {
+    // icons
+    if (running) {
+        dvf3060.setIcon(DVF3060_ICON::PLAY);
+        dvf3060.clearIcon(DVF3060_ICON::PAUSE);
+    } else {
+        dvf3060.setIcon(DVF3060_ICON::PAUSE);
+        dvf3060.clearIcon(DVF3060_ICON::PLAY);
+    }
+    dvf3060.setIcon(DVF3060_ICON::HOUR);
+    dvf3060.setIcon(DVF3060_ICON::COLON_HOUR);
+    dvf3060.setIcon(DVF3060_ICON::MIN);
+    dvf3060.setIcon(DVF3060_ICON::COLON_MIN);
+    dvf3060.setIcon(DVF3060_ICON::SEC);
+
+    // time
+    dvf3060.setChar('0' + hours / 10, 4);
+    dvf3060.setChar('0' + hours % 10, 5);
+    dvf3060.setChar('0' + minutes / 10, 6);
+    dvf3060.setChar('0' + minutes % 10, 7);
+    dvf3060.setChar('0' + seconds / 10, 8);
+    dvf3060.setChar('0' + seconds % 10, 9);
+}
+
+// one time setup
+extern "C" void setup() {
+    dvf3060.init();
+}
+
+// main loop
+extern "C" void loop() {
+    processKeys();
+    updateTimer();
+    updateDisplay();
+    HAL().delay(200); // just for testing!
 }

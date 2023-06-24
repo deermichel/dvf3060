@@ -1,8 +1,8 @@
 #ifndef DVF3060_H
 #define DVF3060_H
 
-#include "pt6311.h"
 #include "dvf3060_font.h"
+#include "pt6311.h"
 
 // display buffer size in bytes, addresses 0x00-0x22
 #define DVF3060_BUF_SIZE 35
@@ -40,8 +40,8 @@ public:
     // clear character
     void clearChar(uint8_t position);
 
-    // is key pressed
-    bool isKeyPressed(uint8_t key) const;
+    // return key state
+    uint8_t getKeyState() const;
 
 private:
     // controller instance
