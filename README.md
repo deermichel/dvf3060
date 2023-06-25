@@ -55,18 +55,18 @@ if (dvf3060.getKeyState() & DVF3060_KEY_PLAY) {/* ... */}
 // see main.cpp for a complete example
 ```
 
-All segments and icons enabled:
+#### All segments and icons enabled:
 ![All segments and icons](img/segments.jpeg)
 
 ## Implementation
 There are several abstraction layers that allow you to easily port the driver to a new platform or similar display configurations.
 - HAL (hardware abstraction layer): Contains platform-specific code to make upper layers work regardless of the underlying platform (TM4C123 in my case). To port this driver to a new platform (e.g., Arduino or RP2040), implement the required methods (see [tm4c.h](src/tm4c.h) as a reference).
-- Controller layer: This implements the SPI protocol as specified in the IC datasheet by using the HAL methods. For use with the DVF-3060 front panel, only PT6311 is relevant, but related controllers like the PT6312 can be supported in a similar fashion.
+- Controller layer: Implements the SPI protocol as specified in the IC datasheet by using the HAL methods. For use with the DVF-3060 front panel, only PT6311 is relevant, but related controllers like the PT6312 can be supported in a similar fashion.
 - Display layer: This is the frontend part of the driver which allows simplified control over characters and icons. It is based on the controller layer and comes with a predefined [ASCII font](src/dvf3060_font.h).
 
 ## Related
 - Some inspiration for the ASCII font: [LED-Segment-ASCII](https://github.com/dmadison/LED-Segment-ASCII)
-- Another inspiration for the ASCII font: [The Super VMW CPU Meter](http://www.deater.net/weave/vmwprod/meter/super.html)
+- More inspiration for the ASCII font: [The Super VMW CPU Meter](http://www.deater.net/weave/vmwprod/meter/super.html)
 - Arduino library for the PT6312 controller: [PT6312_VFD_Arduino_Library](https://github.com/ysard/PT6312_VFD_Arduino_Library/)
 - PT6311 datasheet: [Google](https://www.google.com/search?q=pt6311+datasheet)
 - UPD16311 datasheet: [Google](https://www.google.com/search?q=upd16311+datasheet)
