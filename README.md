@@ -1,4 +1,7 @@
 # dvf3060
+
+![DVF-3060 front panel featuring deermichel](img/deermichel.jpeg)
+
 I picked up an old Kenwood DVF-3060 DVD player and decided to reverse engineer the front panel for a future project.
 The panel features a fancy vacuum fluorescent display (VFD) and some buttons, all controlled through a PT6311 (or UPD16311) IC.
 This repo contains the C++ driver I wrote for a Cortex-M based TI eval board (TM4C123G LaunchPad) to communicate with the controller via SPI.
@@ -10,7 +13,7 @@ This repo contains the C++ driver I wrote for a Cortex-M based TI eval board (TM
 - Poll key states
 - Layered architecture for easy porting to other hardware
 
-More PT6311 features (e.g., other display modes, dimming, LEDs, switches) are implemented by the controller layer (see [pt6311.h](src/pt6311.h)), but not used for the DVF-3060 front panel.
+More PT6311 features (display modes, dimming, LEDs, switches, etc.) are implemented by the controller layer (see [pt6311.h](src/pt6311.h)), but not used for the DVF-3060 front panel.
 
 ## How to
 The project runs out of the box with [PlatformIO](https://platformio.org/) and comes with a [timer example](src/main.cpp).
@@ -23,6 +26,8 @@ The pinout is configured as follows (make sure your board supports **5V logic le
 | PA5     | 5. VFD_DATA_IN             | SSI0 MOSI   |
 | PA2     | 6. VFD_CLK                 | SSI0 CLK    |
 | GND     | 7. GND                     | GND         |
+
+![TM4C123 setup](img/setup.jpeg)
 
 ## Usage
 ```cpp
@@ -50,6 +55,9 @@ if (dvf3060.getKeyState() & DVF3060_KEY_PLAY) {/* ... */}
 // see main.cpp for a complete example
 ```
 
+All segments and icons enabled:
+![All segments and icons](img/segments.jpeg)
+
 ## Implementation
 There are several abstraction layers that allow you to easily port the driver to a new platform or similar display configurations.
 - HAL (hardware abstraction layer): Contains platform-specific code to make upper layers work regardless of the underlying platform (TM4C123 in my case). To port this driver to a new platform (e.g., Arduino or RP2040), implement the required methods (see [tm4c.h](src/tm4c.h) as a reference).
@@ -58,6 +66,7 @@ There are several abstraction layers that allow you to easily port the driver to
 
 ## Related
 - Some inspiration for the ASCII font: [LED-Segment-ASCII](https://github.com/dmadison/LED-Segment-ASCII)
+- Another inspiration for the ASCII font: [The Super VMW CPU Meter](http://www.deater.net/weave/vmwprod/meter/super.html)
 - Arduino library for the PT6312 controller: [PT6312_VFD_Arduino_Library](https://github.com/ysard/PT6312_VFD_Arduino_Library/)
 - PT6311 datasheet: [Google](https://www.google.com/search?q=pt6311+datasheet)
 - UPD16311 datasheet: [Google](https://www.google.com/search?q=upd16311+datasheet)
@@ -70,3 +79,5 @@ There's also an IR receiver on the front panel board, but I haven't looked into 
 
 ## License
 This project is released under the [MIT License](LICENSE).
+
+![Hello World, i am a teapot 418](img/teapot.gif)
